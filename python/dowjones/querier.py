@@ -45,7 +45,6 @@ class Querier(Across):
     def act_wait_query_result(self):
         result_panel = self.wait(30).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
         while True:
-            self.log("waiting for result")
             if self.decide(lambda: result_panel.find_element_by_id("table_1") is not None) \
                     or self.decide(lambda: result_panel.find_element_by_id("lblNoResults1").text.strip() != ""):
                 break
