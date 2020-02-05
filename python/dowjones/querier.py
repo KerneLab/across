@@ -82,22 +82,23 @@ class Querier(Across):
         return_panel = self.browser.find_element_by_id("divTopSearchResults")
         return_panel.find_element_by_css_selector("input[value^='重新搜索']").click()
 
-    def query(self, workbook, tempfile=None):
+    def query(self, workbook, begin=1, tempfile=None):
         sheet = workbook.get_sheet_by_name(workbook.get_sheet_names()[0])
         offset = 2
         for i, row in enumerate(sheet.rows):
-            if i == 0:
+            r = i + 1
+            if r < begin:
                 continue
             name = row[0].value
-            self.log("Row:{} Query:{}".format(i + 1, name))
+            self.log("Row:{} Query:{}".format(r, name))
             self.act_wait_query_page()
             self.act_query(name)
             self.act_wait_query_result()
             result = self.act_record_query_result()
             if result is None:
-                sheet.cell(i + 1, offset, "没有相关纪录")
+                sheet.cell(r, offset, "没有相关纪录")
             else:
-                [sheet.cell(i + 1, offset + j, v) for j, v in enumerate(result[0])]
+                [sheet.cell(r, offset + j, v) for j, v in enumerate(result[0])]
             if tempfile is not None:
                 workbook.save(filename=tempfile)
             self.act_return_query()
