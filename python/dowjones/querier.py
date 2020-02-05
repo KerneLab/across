@@ -24,7 +24,7 @@ class Querier(Across):
         self.input_text(panel.find_element_by_id("email"), username)
         # 输入密码
         self.input_text(panel.find_element_by_id("password"), password)
-        time.sleep(5)
+        self.sleep(5)
         panel.find_elements_by_tag_name("button")[0].click()
 
     def act_wait_query_page(self):
@@ -50,7 +50,7 @@ class Querier(Across):
                     or self.decide(lambda: result_panel.find_element_by_id("lblNoResults1").text.strip() != ""):
                 break
             else:
-                time.sleep(1)
+                self.sleep(1)
 
     def act_record_query_result(self):
         result_panel = self.browser.find_element_by_id("ResultsDiv1")
