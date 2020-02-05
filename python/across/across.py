@@ -48,6 +48,10 @@ class Across:
         if self.browser is not None:
             self.browser.quit()
 
+    def sleep(self, timeout):
+        sleep(timeout)
+        return self
+
     def wait(self, timeout, poll_frequency=0.5, ignored_exceptions=None):
         return WebDriverWait(self.browser, timeout, poll_frequency=poll_frequency,
                              ignored_exceptions=ignored_exceptions)
