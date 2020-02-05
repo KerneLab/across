@@ -90,6 +90,8 @@ class Querier(Across):
             if r < begin_row:
                 continue
             name = row[0].value
+            if name.strip() == "":
+                continue
             self.log("Row:{} Query:{}".format(r, name))
             self.act_wait_query_page()
             self.act_query(name)
