@@ -1,11 +1,15 @@
 from time import sleep, strftime, localtime
+import threading
+import random
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
+import pyautogui as pag
 
 
 class Across:
     browser = None
+    __random_mousemove_interval = 0
 
     def __init__(self):
         return self
@@ -14,7 +18,10 @@ class Across:
         return self
 
     def __exit__(self, exc_type, exc_value, exc_track):
+        self.__random_mousemove_interval = 0
         self.quit()
+
+    ############################################################
 
     def get_browser(self, name):
         if name.lower() == "chrome":
@@ -56,7 +63,7 @@ class Across:
         return WebDriverWait(self.browser, timeout, poll_frequency=poll_frequency,
                              ignored_exceptions=ignored_exceptions)
 
-    ###############################################################
+    ############################################################
 
     def chain(self):
         return ActionChains(self.browser)
@@ -91,3 +98,24 @@ class Across:
                 t[1] = lambda cell: cell.text
         return [[t[1](cells[t[0]]) for t in xtract]
                 for cells in [cells_selector(row) for row in rows_selector(table)]]
+
+    ############################################################
+
+    def start_random_mousemove(self, interval):
+        self.__random_mousemove_interval = interval
+
+        def _random_mousemove():
+            step = 1
+            w, _ = pag.size()
+            while self.__random_mousemove_interval > 0:
+                try:
+                    step *= -1
+                    x, _ = pag.position()
+                    if not ((x == 0 and step == -1) or (x == w - 1 and step == 1)):
+                        pag.moveRel(step)
+                except:
+                    pass
+                self.sleep(self.__random_mousemove_interval)
+
+        threading.Thread(target=_random_mousemove, daemon=True).start()
+        return self

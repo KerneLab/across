@@ -82,12 +82,12 @@ class Querier(Across):
         return_panel = self.browser.find_element_by_id("divTopSearchResults")
         return_panel.find_element_by_css_selector("input[value^='重新搜索']").click()
 
-    def query(self, workbook, begin=1, tempfile=None):
+    def query(self, workbook, begin_row=1, temp_file=None):
         sheet = workbook.get_sheet_by_name(workbook.get_sheet_names()[0])
         offset = 2
         for i, row in enumerate(sheet.rows):
             r = i + 1
-            if r < begin:
+            if r < begin_row:
                 continue
             name = row[0].value
             self.log("Row:{} Query:{}".format(r, name))
@@ -99,7 +99,7 @@ class Querier(Across):
                 sheet.cell(r, offset, "没有相关纪录")
             else:
                 [sheet.cell(r, offset + j, v) for j, v in enumerate(result[0])]
-            if tempfile is not None:
-                workbook.save(filename=tempfile)
+            if temp_file is not None:
+                workbook.save(filename=temp_file)
             self.act_return_query()
         return workbook
