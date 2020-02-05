@@ -24,8 +24,7 @@ class Querier(Across):
         self.input_text(panel.find_element_by_id("email"), username)
         # 输入密码
         self.input_text(panel.find_element_by_id("password"), password)
-        self.sleep(5)
-        panel.find_elements_by_tag_name("button")[0].click()
+        self.pending(5, lambda: panel.find_elements_by_tag_name("button")[0].click() is None)
 
     def act_wait_query_page(self):
         # 等待查询界面
