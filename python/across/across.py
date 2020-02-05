@@ -1,6 +1,7 @@
-from time import strftime, localtime
+from time import sleep, strftime, localtime
 from selenium import webdriver
 from selenium.webdriver import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Across:
@@ -36,9 +37,20 @@ class Across:
         self.browser.get(url)
         return self
 
+    def pending(self, interval, assertion):
+        while True:
+            if self.decide(assertion):
+                return self
+            else:
+                sleep(interval)
+
     def quit(self):
         if self.browser is not None:
             self.browser.quit()
+
+    def wait(self, timeout, poll_frequency=0.5, ignored_exceptions=None):
+        return WebDriverWait(self.browser, timeout, poll_frequency=poll_frequency,
+                             ignored_exceptions=ignored_exceptions)
 
     ###############################################################
 

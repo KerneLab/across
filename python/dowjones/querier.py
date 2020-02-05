@@ -1,7 +1,6 @@
 import re
 import time
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as ec
 from across import Across
 
@@ -19,7 +18,8 @@ class Querier(Across):
 
     def act_login(self, username, password):
         # 获取登录面板
-        panel = wait(self.browser, 60).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
+        panel = self.wait(60).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
+        self.pending(1, lambda: len(panel.find_elements_by_tag_name("button")) > 0)
         # 输入用户名
         self.input_text(panel.find_element_by_id("email"), username)
         # 输入密码
@@ -29,7 +29,7 @@ class Querier(Across):
 
     def act_wait_query_page(self):
         # 等待查询界面
-        wait(self.browser, 180).until(ec.presence_of_element_located((By.ID, "divDownButtons")))
+        self.wait(180).until(ec.presence_of_element_located((By.ID, "divDownButtons")))
 
     def act_query(self, text):
         # 搜索按钮面板
@@ -43,7 +43,7 @@ class Querier(Across):
         query_button.click()
 
     def act_wait_query_result(self):
-        result_panel = wait(self.browser, 30).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
+        result_panel = self.wait(30).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
         while True:
             self.log("waiting for result")
             if self.decide(lambda: result_panel.find_element_by_id("table_1") is not None) \
