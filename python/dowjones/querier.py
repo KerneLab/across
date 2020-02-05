@@ -18,7 +18,7 @@ class Querier(Across):
 
     def act_login(self, username, password):
         # 获取登录面板
-        panel = self.wait(60).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
+        panel = self.wait(180).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
         self.pending(1, lambda: len(panel.find_elements_by_tag_name("button")) > 0)
         # 输入用户名
         self.input_text(panel.find_element_by_id("email"), username)
