@@ -82,8 +82,11 @@ class Across:
         el.send_keys(text)
         return el
 
-    def log(self, msg):
-        print("[{}]{}".format(self.get_timestamp(), msg))
+    def log(self, msg, end='\n', pure=False):
+        if pure:
+            print(msg, end=end, flush=True)
+        else:
+            print("[{}]{}".format(self.get_timestamp(), msg), end=end, flush=True)
 
     def record_table(self, table, xtract,
                      rows_selector=lambda table: table.find_elements_by_tag_name("tr"),

@@ -63,11 +63,17 @@ class Querier(Across):
 
             def xtract_name_id(cell):
                 # javascript:ShowHoverText(event,"40405","Hajj Osama Bin Laden","男性","1-1-1957","精确","","10")
-                return re.sub(r'.*?\(event,"([^"]+?)".*', r"\1",
+                return re.sub(r'.+?\(event,"([^"]+?)".*', r"\1",
+                              cell.find_elements_by_tag_name("a")[0].get_attribute("onmouseover"))
+
+            def xtract_name_matched(cell):
+                # javascript:ShowHoverText(event,"40405","Hajj Osama Bin Laden","男性","1-1-1957","精确","","10")
+                return re.sub(r'.+?\(event,"(?:[^"]+?)","(.+?)",".*', r"\1",
                               cell.find_elements_by_tag_name("a")[0].get_attribute("onmouseover"))
 
             xtract = [[0, xtract_img_title],
                       [4, xtract_name_id],
+                      [4, xtract_name_matched],
                       [4, None],
                       [5, None],
                       [6, None],
@@ -90,7 +96,7 @@ class Querier(Across):
             name = row[0].value
             if name.strip() == "":
                 continue
-            self.log("Row:{} Query:{}".format(r, name))
+            self.log("Row:{} Query:{} ... ".format(r, name), end='')
             self.act_wait_query_page()
             self.act_query(name)
             self.act_wait_query_result()
@@ -101,5 +107,6 @@ class Querier(Across):
                 [sheet.cell(r, offset + j, v) for j, v in enumerate(result[0])]
             if temp_file is not None:
                 workbook.save(filename=temp_file)
+            self.log("Done", pure=True)
             self.act_return_query()
         return workbook
