@@ -1,3 +1,0 @@
-conda create -n across python=3.7
-activate across
-pip install selenium openpyxl pyautogui

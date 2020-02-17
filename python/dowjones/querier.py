@@ -1,20 +1,13 @@
 import re
-import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from across import Across
 
 
 class Querier(Across):
-    url = ""
-    __username = ""
-    __password = ""
 
-    def __init__(self, url, username, password):
+    def __init__(self):
         super(Querier, self).__init__()
-        self.url = url
-        self.__username = username
-        self.__password = password
 
     def act_login(self, username, password):
         # 获取登录面板
