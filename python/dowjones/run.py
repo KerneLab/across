@@ -18,8 +18,8 @@ def run(queryfile, begin_row, tempfile='data/temp.xlsx'):
         q.act_login(config.dj_username, config.dj_password)
         try:
             wb = q.query(wb, begin_row=begin_row, temp_file=tempfile)
-        except:
-            pass
+        except Exception as e:
+            q.log(e)
         wb.save(filename=queryfile)
 
 
