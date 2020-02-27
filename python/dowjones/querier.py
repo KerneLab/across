@@ -29,7 +29,7 @@ class Querier(Across):
         self.pending(180, 5).until(self.when(lambda: panel.find_elements_by_tag_name("button")[0].click() is None))
 
     def act_wait_query_page(self):
-        # 等待查询界面
+        # 等待查询界面完整加载
         self.wait(180).until(ec.presence_of_element_located((By.ID, "divDownButtons")))
 
     def act_query(self, text):

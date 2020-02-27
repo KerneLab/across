@@ -9,7 +9,7 @@ from dowjones import config
 from dowjones import Querier
 
 
-def run(queryfile, begin_row, tempfile='data/temp.xlsx'):
+def run(queryfile, begin_row):
     print("{} {}".format(queryfile, begin_row))
     wb = xl.load_workbook(queryfile)
     with Querier(begin_row) as q:
@@ -17,7 +17,7 @@ def run(queryfile, begin_row, tempfile='data/temp.xlsx'):
         q.get_browser("chrome").open(config.dj_url)
         try:
             q.act_login(config.dj_username, config.dj_password)
-            wb = q.query(wb, begin_row=begin_row, temp_file=tempfile)
+            wb = q.query(wb, begin_row=begin_row, temp_file=queryfile + ".temp")
         except Exception as e:
             q.log(e)
             return q.query_row
