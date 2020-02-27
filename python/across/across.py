@@ -46,8 +46,8 @@ class Across:
         self.browser.get(url)
         return self
 
-    def pending(self, interval: int, timeout: int = None):
-        return Pending(interval, timeout)
+    def pending(self, timeout: int = None, interval: int = 1):
+        return Pending(timeout, interval)
 
     def quit(self):
         if self.browser is not None:

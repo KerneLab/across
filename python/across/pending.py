@@ -5,14 +5,6 @@ from typing import Callable
 class Pending:
 
     @property
-    def interval(self):
-        return self.__interval
-
-    @interval.setter
-    def interval(self, value):
-        self.__interval = value
-
-    @property
     def timeout(self):
         return self.__timeout
 
@@ -20,9 +12,17 @@ class Pending:
     def timeout(self, value):
         self.__timeout = value
 
-    def __init__(self, interval: int, timeout: int = None):
-        self.interval = interval
+    @property
+    def interval(self):
+        return self.__interval
+
+    @interval.setter
+    def interval(self, value):
+        self.__interval = value
+
+    def __init__(self, timeout: int = None, interval: int = 1):
         self.timeout = timeout
+        self.interval = interval
 
     def judge(self, assertion, error_value=False):
         try:
