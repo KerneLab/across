@@ -6,18 +6,27 @@ from across import Across
 
 class Querier(Across):
 
-    def __init__(self):
+    @property
+    def query_row(self):
+        return self.__query_row
+
+    @query_row.setter
+    def query_row(self, value):
+        self.__query_row = value
+
+    def __init__(self, begin_row):
         super(Querier, self).__init__()
+        self.query_row = begin_row
 
     def act_login(self, username, password):
         # 获取登录面板
         panel = self.wait(180).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
-        self.pending(1, lambda: len(panel.find_elements_by_tag_name("button")) > 0)
+        self.pending(1).until(self.when(lambda: len(panel.find_elements_by_tag_name("button")) > 0))
         # 输入用户名
         self.input_text(panel.find_element_by_id("email"), username)
         # 输入密码
         self.input_text(panel.find_element_by_id("password"), password)
-        self.pending(5, lambda: panel.find_elements_by_tag_name("button")[0].click() is None)
+        self.pending(5).until(self.when(lambda: panel.find_elements_by_tag_name("button")[0].click() is None))
 
     def act_wait_query_page(self):
         # 等待查询界面
@@ -36,12 +45,9 @@ class Querier(Across):
 
     def act_wait_query_result(self):
         result_panel = self.wait(30).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
-        while True:
-            if self.decide(lambda: result_panel.find_element_by_id("table_1") is not None) \
-                    or self.decide(lambda: result_panel.find_element_by_id("lblNoResults1").text.strip() != ""):
-                break
-            else:
-                self.sleep(1)
+        self.pending(1, 180).until(
+            lambda: self.expect(lambda: result_panel.find_element_by_id("table_1") is not None)
+                    or self.expect(lambda: result_panel.find_element_by_id("lblNoResults1").text.strip() != ""))
 
     def act_record_query_result(self):
         result_panel = self.browser.find_element_by_id("ResultsDiv1")
@@ -86,6 +92,7 @@ class Querier(Across):
             r = i + 1
             if r < begin_row:
                 continue
+            self.query_row = r
             name = row[0].value
             if name.strip() == "":
                 continue

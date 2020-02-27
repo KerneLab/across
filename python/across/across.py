@@ -1,10 +1,12 @@
 from time import sleep, strftime, localtime
+from typing import Any, Callable
 import threading
 import random
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 import pyautogui as pag
+from across.pending import Pending
 
 
 class Across:
@@ -44,12 +46,8 @@ class Across:
         self.browser.get(url)
         return self
 
-    def pending(self, interval, assertion):
-        while True:
-            if self.decide(assertion):
-                return self
-            else:
-                sleep(interval)
+    def pending(self, interval: int, timeout: int = None):
+        return Pending(interval, timeout)
 
     def quit(self):
         if self.browser is not None:
@@ -68,11 +66,11 @@ class Across:
     def chain(self):
         return ActionChains(self.browser)
 
-    def decide(self, assertion):
+    def expect(self, expect: Callable[[], Any], error_value: Any = False):
         try:
-            return assertion()
+            return expect()
         except:
-            return False
+            return error_value
 
     def get_timestamp(self):
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
@@ -101,6 +99,12 @@ class Across:
                 t[1] = lambda cell: cell.text
         return [[t[1](cells[t[0]]) for t in xtract]
                 for cells in [cells_selector(row) for row in rows_selector(table)]]
+
+    def when(self, assertion: Callable[[], bool], error_value=False):
+        def wrap():
+            return self.expect(assertion, error_value)
+
+        return wrap
 
     ############################################################
 

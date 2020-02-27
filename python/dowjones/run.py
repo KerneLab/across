@@ -12,15 +12,18 @@ from dowjones import Querier
 def run(queryfile, begin_row, tempfile='data/temp.xlsx'):
     print("{} {}".format(queryfile, begin_row))
     wb = xl.load_workbook(queryfile)
-    with Querier() as q:
+    with Querier(begin_row) as q:
         q.start_random_mousemove(60)
         q.get_browser("chrome").open(config.dj_url)
-        q.act_login(config.dj_username, config.dj_password)
         try:
+            q.act_login(config.dj_username, config.dj_password)
             wb = q.query(wb, begin_row=begin_row, temp_file=tempfile)
         except Exception as e:
             q.log(e)
-        wb.save(filename=queryfile)
+            return q.query_row
+        finally:
+            wb.save(filename=queryfile)
+        return 0
 
 
 if __name__ == "__main__":
@@ -34,7 +37,11 @@ if __name__ == "__main__":
     begin_row = sys.argv[2] if len(sys.argv) > 2 else simpledialog.askinteger(title=u'起始行数', prompt=u'请输入起始行数',
                                                                               initialvalue=1)
 
-    run(filename, int(begin_row))
+    query_row = int(begin_row)
+    while True:
+        query_row = run(filename, query_row)
+        if query_row == 0:
+            break
 
     time.sleep(10)
     tk.destroy()
