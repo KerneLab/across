@@ -9,7 +9,7 @@ from dowjones import config
 from dowjones import Querier
 
 
-def run(queryfile, begin_row):
+def run(queryfile, begin_row, end_row=-1):
     print("{} {}".format(queryfile, begin_row))
     wb = xl.load_workbook(queryfile)
     with Querier(begin_row) as q:
@@ -17,7 +17,7 @@ def run(queryfile, begin_row):
         q.get_browser("chrome").open(config.dj_url)
         try:
             q.act_login(config.dj_username, config.dj_password)
-            wb = q.query(wb, begin_row=begin_row, temp_file=queryfile + ".temp")
+            wb = q.query(wb, begin_row=begin_row, end_row=end_row, temp_file=queryfile + ".temp")
         except Exception as e:
             q.log(e)
             return q.query_row
@@ -37,9 +37,13 @@ if __name__ == "__main__":
     begin_row = sys.argv[2] if len(sys.argv) > 2 else simpledialog.askinteger(title=u'起始行数', prompt=u'请输入起始行数',
                                                                               initialvalue=1)
 
+    end_row = sys.argv[3] if len(sys.argv) > 3 else simpledialog.askinteger(title=u'终止行数', prompt=u'请输入终止行数，-1表示最后一行',
+                                                                            initialvalue=-1)
+
     query_row = int(begin_row)
+    end_row = int(end_row)
     while True:
-        query_row = run(filename, query_row)
+        query_row = run(filename, query_row, end_row)
         if query_row == 0:
             break
 
