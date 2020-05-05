@@ -40,7 +40,7 @@ class Querier(Across):
                       [6, None],
                       [7, None]]
             return self.record_table(result_table, xtract,
-                                     rows_selector=lambda table: table.find_elements_by_tag_name("tr")[1:])
+                                     rows_selector=lambda table: table.find_elements_by_tag_name("tr")[1:])[0]
 
     def query(self, workbook, begin_row=1, end_row=-1, temp_file=None):
         sheet = workbook.get_sheet_by_name(workbook.get_sheet_names()[0])

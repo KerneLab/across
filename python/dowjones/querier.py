@@ -79,7 +79,7 @@ class Querier(Across):
                       [7, None],
                       [8, None]]
             return self.record_table(result_table, xtract,
-                                     rows_selector=lambda table: table.find_elements_by_tag_name("tr")[0:1])
+                                     rows_selector=lambda table: table.find_elements_by_tag_name("tr")[0:1])[0]
 
     def act_return_query(self):
         return_panel = self.browser.find_element_by_id("divTopSearchResults")
