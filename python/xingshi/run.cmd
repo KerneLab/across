@@ -1,4 +1,4 @@
 cd ..\..
 call activate across
-python python\pinyin\run.py
+python python\xingshi\run.py
 pause

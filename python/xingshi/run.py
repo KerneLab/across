@@ -5,7 +5,7 @@ from tkinter import Tk, filedialog, simpledialog
 import openpyxl as xl
 
 sys.path.append(os.getcwd() + "/python")
-from pinyin import Querier
+from xingshi import Querier
 
 
 def run(queryfile, begin_row, end_row=-1):
@@ -28,4 +28,4 @@ def run(queryfile, begin_row, end_row=-1):
 if __name__ == "__main__":
     os.environ['Path'] = os.environ['Path'] + os.path.pathsep + ".\\driver"
 
-    run("e:/python/across/data/pinyin.xlsx", 1)
+    run("e:/python/across/data/xingshi.xlsx", 1)
