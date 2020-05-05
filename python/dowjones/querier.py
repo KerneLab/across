@@ -106,7 +106,7 @@ class Querier(Across):
             if result is None:
                 sheet.cell(r, offset, "没有相关纪录")
             else:
-                [sheet.cell(r, offset + j, v) for j, v in enumerate(result[0])]
+                [sheet.cell(r, offset + j, v) for j, v in enumerate(result)]
             if temp_file is not None:
                 workbook.save(filename=temp_file)
             self.log("Done", pure=True)

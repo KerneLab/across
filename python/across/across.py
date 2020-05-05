@@ -3,6 +3,7 @@ from typing import Any, Callable
 import threading
 import random
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 import pyautogui as pag
@@ -97,7 +98,7 @@ class Across:
         for t in xtract:
             if t[1] is None:
                 t[1] = lambda cell: cell.text
-        return [[t[1](cells[t[0]]) for t in xtract]
+        return [t[1](cells[t[0]]) for t in xtract
                 for cells in [cells_selector(row) for row in rows_selector(table)]]
 
     def when(self, assertion: Callable[[], bool], error_value=False):
