@@ -1,5 +1,6 @@
 import re
 import random
+from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from across import Across
@@ -35,16 +36,25 @@ class Querier(Across):
         return self.record_table(table, xtract,
                                  rows_selector=lambda t: t.find_elements_by_css_selector("tr.datatr"))
 
-    def query(self, text):
+    def query(self, workbook, filename, text):
+        sheet = workbook.get_sheet_by_name(workbook.get_sheet_names()[0])
         self.act_query(text)
-        count = 0
-        while count < 5:
-            count += 1
-            self.sleep(0.5 + random.random() * 0.5)
+        rows = 1
+        goon = True
+        while goon:
+            self.sleep(1 + random.random())
             next, table = self.act_wait_result()
             result = self.act_record_result(table)
-            print(result)
-            if "okgo" in set(re.split(r"\s+", next.get_attribute("class"))):
+            for row in result:
+                if datetime.strptime(row[4], "%Y-%m-%d") < datetime.now() - timedelta(days=90):
+                    goon = False
+                    break
+                elif re.search(re.escape(text), row[1]) is not None \
+                        and re.search(re.escape("中标"), row[0]) is None:
+                    [sheet.cell(rows, j + 1, v) for j, v in enumerate(row)]
+                    rows += 1
+            workbook.save(filename=filename)
+            if goon and "okgo" in set(re.split(r"\s+", next.get_attribute("class"))):
                 next.find_element_by_css_selector("a.nextpagea").click()
             else:
                 break

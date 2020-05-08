@@ -11,9 +11,16 @@ from biding import Querier
 
 
 def run():
+    wb = xl.Workbook()
+    fn = "data/biding.xlsx"
     with Querier() as q:
         q.get_browser("chrome").open("http://www.bidchance.com/freesearch.do?searchtype=zb&queryword=xray")
-        q.query("反洗钱")
+        try:
+            q.query(wb, fn, "反洗钱")
+        except Exception as e:
+            q.log(e)
+        finally:
+            wb.save(filename=fn)
 
 
 if __name__ == "__main__":
