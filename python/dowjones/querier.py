@@ -85,9 +85,9 @@ class Querier(Across):
         return_panel = self.browser.find_element_by_id("divTopSearchResults")
         return_panel.find_element_by_css_selector("input[value^='重新搜索']").click()
 
-    def query(self, workbook, begin_row=1, end_row=-1, temp_file=None):
+    def query(self, workbook, begin_row=1, end_row=-1, begin_col=1, temp_file=None):
         sheet = workbook.get_sheet_by_name(workbook.get_sheet_names()[0])
-        offset = 2
+        offset = begin_col
         for i, row in enumerate(sheet.rows):
             r = i + 1
             if 0 < end_row < r:
@@ -95,7 +95,7 @@ class Querier(Across):
             if r < begin_row:
                 continue
             self.query_row = r
-            name = row[0].value
+            name = row[offset - 1].value
             if name.strip() == "":
                 continue
             self.log("Row:{} Query:{} ... ".format(r, name), end='')
