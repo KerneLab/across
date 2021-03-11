@@ -104,9 +104,9 @@ class Querier(Across):
             self.act_wait_query_result()
             result = self.act_record_query_result()
             if result is None:
-                sheet.cell(r, offset, "没有相关纪录")
+                sheet.cell(r, offset + 1, "没有相关纪录")
             else:
-                [sheet.cell(r, offset + j, v) for j, v in enumerate(result)]
+                [sheet.cell(r, offset + 1 + j, v) for j, v in enumerate(result)]
             if temp_file is not None:
                 workbook.save(filename=temp_file)
             self.log("Done", pure=True)
