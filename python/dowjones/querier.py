@@ -20,13 +20,13 @@ class Querier(Across):
 
     def act_login(self, username, password):
         # 获取登录面板
-        panel = self.wait(180).until(ec.presence_of_element_located((By.ID, "card-sign-in")))
-        self.pending(180).until(self.when(lambda: len(panel.find_elements_by_tag_name("button")) > 0))
+        panel = self.wait(180).until(ec.presence_of_element_located((By.XPATH, "//div[contains(@class,'text-card-foreground')]")))
+        self.pending(180).until(self.when(lambda: len(self.browser.find_elements_by_id("signin-btn")) > 0))
         # 输入用户名
-        self.input_text(panel.find_element_by_id("email"), username)
+        self.input_text(self.browser.find_element_by_id("email"), username)
         # 输入密码
-        self.input_text(panel.find_element_by_id("password"), password)
-        self.pending(180, 5).until(self.when(lambda: panel.find_elements_by_tag_name("button")[0].click() is None))
+        self.input_text(self.browser.find_element_by_id("password"), password)
+        self.pending(180, 5).until(self.when(lambda: self.browser.find_elements_by_id("signin-btn")[0].click() is None))
 
     def act_wait_query_page(self):
         # 等待查询界面完整加载
@@ -44,7 +44,7 @@ class Querier(Across):
         query_button.click()
 
     def act_wait_query_result(self):
-        result_panel = self.wait(30).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
+        result_panel = self.wait(180).until(ec.presence_of_element_located((By.ID, "ResultsDiv1")))
         self.pending(180).until(
             lambda: self.expect(lambda: result_panel.find_element_by_id("table_1") is not None)
                     or self.expect(lambda: result_panel.find_element_by_id("lblNoResults1").text.strip() != ""))
